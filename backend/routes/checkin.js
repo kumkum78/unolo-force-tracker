@@ -1,6 +1,7 @@
 const express = require('express');
 const pool = require('../config/database');
 const { authenticateToken } = require('../middleware/auth');
+const { calculateDistance, checkDistanceWarning } = require('../utils/distance');
 
 const router = express.Router();
 
@@ -42,7 +43,7 @@ router.post('/', authenticateToken, async (req, res) => {
 
         // Check for existing active check-in
         const [activeCheckins] = await pool.execute(
-            'SELECT * FROM checkins WHERE employee_id = ? AND status = "checked_in"',
+            'SELECT * FROM checkins WHERE employee_id = ? AND status = \'checked_in\'',
             [req.user.id]
         );
 
@@ -53,19 +54,37 @@ router.post('/', authenticateToken, async (req, res) => {
             });
         }
 
-        const [result] = await pool.execute(
-            `INSERT INTO checkins (employee_id, client_id, lat, lng, notes, status)
-             VALUES (?, ?, ?, ?, ?, 'checked_in')`,
-            [req.user.id, client_id, latitude, longitude, notes || null]
+        // Get client location to calculate distance
+        const [clients] = await pool.execute(
+            'SELECT latitude, longitude FROM clients WHERE id = ?',
+            [client_id]
         );
 
-        res.status(201).json({
+        const clientLat = clients[0].latitude;
+        const clientLng = clients[0].longitude;
+        const distance = calculateDistance(latitude, longitude, clientLat, clientLng);
+        const warningInfo = checkDistanceWarning(distance);
+
+        const [result] = await pool.execute(
+            `INSERT INTO checkins (employee_id, client_id, latitude, longitude, distance_from_client, notes, status)
+             VALUES (?, ?, ?, ?, ?, ?, \'checked_in\')`,
+            [req.user.id, client_id, latitude, longitude, distance, notes || null]
+        );
+
+        const response = {
             success: true,
             data: {
                 id: result.insertId,
+                distance_from_client: distance,
                 message: 'Checked in successfully'
             }
-        });
+        };
+
+        if (warningInfo.shouldWarn) {
+            response.data.warning = warningInfo.message;
+        }
+
+        res.status(201).json(response);
     } catch (error) {
         console.error('Check-in error:', error);
         res.status(500).json({ success: false, message: 'Check-in failed' });
@@ -76,7 +95,7 @@ router.post('/', authenticateToken, async (req, res) => {
 router.put('/checkout', authenticateToken, async (req, res) => {
     try {
         const [activeCheckins] = await pool.execute(
-            'SELECT * FROM checkins WHERE employee_id = ? ORDER BY checkin_time DESC LIMIT 1',
+            'SELECT * FROM checkins WHERE employee_id = ? AND status = \'checked_in\' ORDER BY checkin_time DESC LIMIT 1',
             [req.user.id]
         );
 
@@ -84,12 +103,22 @@ router.put('/checkout', authenticateToken, async (req, res) => {
             return res.status(404).json({ success: false, message: 'No active check-in found' });
         }
 
+        const checkinTime = new Date(activeCheckins[0].checkin_time);
+        const checkoutTime = new Date();
+        const durationMinutes = Math.floor((checkoutTime - checkinTime) / 60000);
+
         await pool.execute(
-            'UPDATE checkins SET checkout_time = NOW(), status = "checked_out" WHERE id = ?',
+            'UPDATE checkins SET checkout_time = CURRENT_TIMESTAMP, status = \'checked_out\' WHERE id = ?',
             [activeCheckins[0].id]
         );
 
-        res.json({ success: true, message: 'Checked out successfully' });
+        res.json({ 
+            success: true, 
+            data: { 
+                duration: durationMinutes,
+                message: 'Checked out successfully'
+            }
+        });
     } catch (error) {
         console.error('Checkout error:', error);
         res.status(500).json({ success: false, message: 'Checkout failed' });
@@ -110,10 +139,12 @@ router.get('/history', authenticateToken, async (req, res) => {
         const params = [req.user.id];
 
         if (start_date) {
-            query += ` AND DATE(ch.checkin_time) >= '${start_date}'`;
+            query += ` AND DATE(ch.checkin_time) >= ?`;
+            params.push(start_date);
         }
         if (end_date) {
-            query += ` AND DATE(ch.checkin_time) <= '${end_date}'`;
+            query += ` AND DATE(ch.checkin_time) <= ?`;
+            params.push(end_date);
         }
 
         query += ' ORDER BY ch.checkin_time DESC';
