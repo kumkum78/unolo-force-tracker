@@ -1,7 +1,8 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const pool = require('../config/database');
+const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -10,7 +11,7 @@ router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        if (!email || !password) {
+        if (!email || !password || email.trim() === '' || password.trim() === '') {
             return res.status(400).json({ success: false, message: 'Email and password required' });
         }
 
@@ -25,14 +26,14 @@ router.post('/login', async (req, res) => {
 
         const user = users[0];
         
-        const isValidPassword = bcrypt.compare(password, user.password);
+        const isValidPassword = await bcrypt.compare(password, user.password);
         
         if (!isValidPassword) {
             return res.status(401).json({ success: false, message: 'Invalid credentials' });
         }
 
         const token = jwt.sign(
-            { id: user.id, email: user.email, role: user.role, name: user.name, password: user.password },
+            { id: user.id, email: user.email, role: user.role, name: user.name },
             process.env.JWT_SECRET,
             { expiresIn: '24h' }
         );
@@ -56,19 +57,11 @@ router.post('/login', async (req, res) => {
 });
 
 // Get current user profile
-router.get('/me', async (req, res) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-
-    if (!token) {
-        return res.status(401).json({ success: false, message: 'Not authenticated' });
-    }
-
+router.get('/me', authenticateToken, async (req, res) => {
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const [users] = await pool.execute(
             'SELECT id, name, email, role FROM users WHERE id = ?',
-            [decoded.id]
+            [req.user.id]
         );
 
         if (users.length === 0) {
@@ -77,7 +70,7 @@ router.get('/me', async (req, res) => {
 
         res.json({ success: true, data: users[0] });
     } catch (error) {
-        res.status(401).json({ success: false, message: 'Invalid token' });
+        res.status(500).json({ success: false, message: 'Failed to fetch user profile' });
     }
 });
 
