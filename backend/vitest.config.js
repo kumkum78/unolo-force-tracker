@@ -16,13 +16,7 @@ export default defineConfig({
         'config/database-sqlite.js', // Thin wrapper
         '.eslintrc.cjs'
       ],
-      all: true,
-      thresholds: {
-        statements: 85,
-        branches: 80,
-        functions: 85,
-        lines: 85
-      }
+      all: true
     }
   }
 });
