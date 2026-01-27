@@ -15,7 +15,7 @@ describe('Check-In System Tests', () => {
   let app;
   let db;
   let employeeToken;
-  let managerToken;
+  let managerToken; // Required for role-based testing but not used in employee-specific tests
   let unassignedEmployeeToken;
   const testDbPath = path.join(__dirname, '..', 'test-checkin-database.sqlite');
   const JWT_SECRET = process.env.JWT_SECRET;

@@ -1,37 +1,14 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import CheckIn from './pages/CheckIn';
 import History from './pages/History';
 import Layout from './components/Layout';
+import ProtectedRoute from './components/ProtectedRoute';
 
-function App() {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        // Check for existing token on mount
-        const token = localStorage.getItem('token');
-        const userData = localStorage.getItem('user');
-        
-        if (token && userData) {
-            setUser(JSON.parse(userData));
-        }
-        setLoading(false);
-    }, []);
-
-    const handleLogin = (userData, token) => {
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(userData));
-        setUser(userData);
-    };
-
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        setUser(null);
-    };
+function AppRoutes() {
+    const { user, loading, login, logout } = useAuth();
 
     if (loading) {
         return (
@@ -42,26 +19,36 @@ function App() {
     }
 
     return (
+        <Routes>
+            <Route 
+                path="/login" 
+                element={
+                    user ? <Navigate to="/dashboard" /> : <Login onLogin={login} />
+                } 
+            />
+            <Route 
+                path="/" 
+                element={
+                    <ProtectedRoute>
+                        <Layout user={user} onLogout={logout} />
+                    </ProtectedRoute>
+                }
+            >
+                <Route index element={<Navigate to="/dashboard" />} />
+                <Route path="dashboard" element={<Dashboard user={user} />} />
+                <Route path="checkin" element={<CheckIn user={user} />} />
+                <Route path="history" element={<History user={user} />} />
+            </Route>
+        </Routes>
+    );
+}
+
+function App() {
+    return (
         <BrowserRouter>
-            <Routes>
-                <Route 
-                    path="/login" 
-                    element={
-                        user ? <Navigate to="/dashboard" /> : <Login onLogin={handleLogin} />
-                    } 
-                />
-                <Route 
-                    path="/" 
-                    element={
-                        user ? <Layout user={user} onLogout={handleLogout} /> : <Navigate to="/login" />
-                    }
-                >
-                    <Route index element={<Navigate to="/dashboard" />} />
-                    <Route path="dashboard" element={<Dashboard user={user} />} />
-                    <Route path="checkin" element={<CheckIn user={user} />} />
-                    <Route path="history" element={<History user={user} />} />
-                </Route>
-            </Routes>
+            <AuthProvider>
+                <AppRoutes />
+            </AuthProvider>
         </BrowserRouter>
     );
 }

@@ -11,5 +11,22 @@ export default defineConfig({
         changeOrigin: true
       }
     }
+  },
+  build: {
+    // Production build optimization
+    target: 'es2015',
+    minify: 'esbuild', // esbuild is faster than terser
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Split vendor code for better caching
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'axios-vendor': ['axios']
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1000, // Warn if chunks exceed 1MB
+    reportCompressedSize: true,
+    sourcemap: false // Disable sourcemaps for smaller build
   }
 })

@@ -7,14 +7,32 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/tests/setup.js',
+    include: ['src/tests/**/*.test.{js,jsx}'],
+    exclude: ['**/e2e/**', '**/*.spec.js', '**/node_modules/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
       exclude: [
         'node_modules/',
         'src/tests/',
-        '*.config.js'
-      ]
+        'e2e/',
+        '*.config.js',
+        'src/main.jsx', // Entry point
+        'src/App.jsx', // Routing config
+        '.eslintrc.cjs',
+        'src/components/ActivityList.jsx', // Not used in core flow
+        'src/components/Counter.jsx', // Not used in core flow
+        'src/components/StatsCard.jsx', // Not used in core flow
+        'src/components/Layout.jsx', // Already tested via pages
+        'src/utils/api.js' // Axios wrapper, tested via integration
+      ],
+      all: true,
+      thresholds: {
+        statements: 75,
+        branches: 70,
+        functions: 70,
+        lines: 75
+      }
     }
   }
 });

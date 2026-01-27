@@ -2,10 +2,6 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
 import express from 'express';
 import jwt from 'jsonwebtoken';
-import Database from 'better-sqlite3';
-import bcrypt from 'bcryptjs';
-import path from 'path';
-import fs from 'fs';
 import dotenv from 'dotenv';
 
 // Load environment variables

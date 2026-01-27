@@ -9,22 +9,18 @@ db.pragma('foreign_keys = ON');
 
 // Helper to make it work like mysql2 promises (for compatibility)
 const query = (sql, params = []) => {
-    try {
-        if (sql.trim().toUpperCase().startsWith('SELECT')) {
-            const stmt = db.prepare(sql);
-            const rows = stmt.all(...params);
-            return [rows];
-        } else if (sql.trim().toUpperCase().startsWith('INSERT')) {
-            const stmt = db.prepare(sql);
-            const result = stmt.run(...params);
-            return [{ insertId: result.lastInsertRowid, affectedRows: result.changes }];
-        } else {
-            const stmt = db.prepare(sql);
-            const result = stmt.run(...params);
-            return [{ affectedRows: result.changes }];
-        }
-    } catch (error) {
-        throw error;
+    if (sql.trim().toUpperCase().startsWith('SELECT')) {
+        const stmt = db.prepare(sql);
+        const rows = stmt.all(...params);
+        return [rows];
+    } else if (sql.trim().toUpperCase().startsWith('INSERT')) {
+        const stmt = db.prepare(sql);
+        const result = stmt.run(...params);
+        return [{ insertId: result.lastInsertRowid, affectedRows: result.changes }];
+    } else {
+        const stmt = db.prepare(sql);
+        const result = stmt.run(...params);
+        return [{ affectedRows: result.changes }];
     }
 };
 

@@ -20,7 +20,7 @@ router.get('/stats', authenticateToken, requireManager, async (req, res) => {
             `SELECT COUNT(*) as count 
              FROM checkins ch
              INNER JOIN users u ON ch.employee_id = u.id
-             WHERE u.manager_id = ? AND ch.status = \'checked_in\'`,
+             WHERE u.manager_id = ? AND ch.status = 'checked_in'`,
             [managerId]
         );
         

@@ -12,7 +12,7 @@ function Dashboard({ user }) {
 
     const fetchDashboardData = async () => {
         try {
-            const endpoint = user.id === 1 ? '/dashboard/stats' : '/dashboard/employee';
+            const endpoint = user.role === 'manager' ? '/dashboard/stats' : '/dashboard/employee';
             const response = await api.get(endpoint);
             
             if (response.data.success) {
@@ -58,13 +58,13 @@ function Dashboard({ user }) {
                         <p className="text-3xl font-bold text-green-600">{stats?.active_checkins || 0}</p>
                     </div>
                     <div className="bg-white p-6 rounded-lg shadow">
-                        <h3 className="text-gray-500 text-sm">Today's Visits</h3>
+                        <h3 className="text-gray-500 text-sm">Today&apos;s Visits</h3>
                         <p className="text-3xl font-bold text-purple-600">{stats?.today_checkins?.length || 0}</p>
                     </div>
                 </div>
 
                 <div className="bg-white rounded-lg shadow">
-                    <h3 className="text-lg font-semibold p-4 border-b">Today's Activity</h3>
+                    <h3 className="text-lg font-semibold p-4 border-b">Today&apos;s Activity</h3>
                     <div className="p-4">
                         {stats?.today_checkins?.length > 0 ? (
                             <table className="w-full">
@@ -117,11 +117,11 @@ function Dashboard({ user }) {
                     <p className="text-3xl font-bold text-blue-600">{stats?.assigned_clients?.length || 0}</p>
                 </div>
                 <div className="bg-white p-6 rounded-lg shadow">
-                    <h3 className="text-gray-500 text-sm">This Week's Visits</h3>
+                    <h3 className="text-gray-500 text-sm">This Week&apos;s Visits</h3>
                     <p className="text-3xl font-bold text-green-600">{stats?.week_stats?.total_checkins || 0}</p>
                 </div>
                 <div className="bg-white p-6 rounded-lg shadow">
-                    <h3 className="text-gray-500 text-sm">Today's Check-ins</h3>
+                    <h3 className="text-gray-500 text-sm">Today&apos;s Check-ins</h3>
                     <p className="text-3xl font-bold text-purple-600">{stats?.today_checkins?.length || 0}</p>
                 </div>
             </div>

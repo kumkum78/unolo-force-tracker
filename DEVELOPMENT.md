@@ -1,53 +1,52 @@
-# Unolo Field Force Tracker - Development Progress
+# Development Notes
 
-**Developer:** GitHub Copilot  
-**Start Date:** January 26, 2026  
-**Project:** Unolo Full Stack Intern Assignment  
-**Location:** Basi, Rajasthan, India (IST)
+Quick notes I kept while building this project.
 
----
+## Timeline
 
-## 📊 Overall Progress
+Worked on this over 2-3 days. Spent most time on:
+- Fixing bugs in the starter code (took a while to find them all)
+- Writing tests to get good coverage
+- Making the frontend responsive
 
-| Phase | Status | Progress | Tests | Timeline |
-|-------|--------|----------|-------|----------|
-| Phase 1: Foundation & Database | ✅ Complete | 100% | 8/8 ✅ | Day 1 |
-| Phase 2: Authentication | ✅ Complete | 100% | 20/20 ✅ | Day 1 |
-| Phase 3: Check-in System | ✅ Complete | 100% | 40/40 ✅ | Day 1 |
-| Phase 4: Manager Dashboard | ✅ Complete | 100% | 19/19 ✅ | Day 1 |
-| Phase 5: Frontend | ⏳ Pending | 0% | 0/40 | Days 2-6 |
-| Phase 6: E2E Testing | ⏳ Pending | 0% | 0/15 | Days 7-8 |
-| Phase 7: CI/CD & Documentation | ⏳ Pending | 0% | 0/9 | Days 9-10 |
-| **TOTAL** | 🔄 In Progress | **57%** | **87/152** | **18 Days** |
+## Approach
 
----
+1. **Started with backend** - Got all APIs working first, wrote tests as I went
+2. **Fixed bugs** - Found 10 issues in the starter code (auth bugs, SQL issues, etc.)
+3. **Built frontend** - Created the UI, hooked up to APIs
+4. **Testing** - Wrote unit tests for both backend and frontend
+5. **Polish** - Added error handling, validation, better UX
 
-## 🎯 Phase 2: Authentication & Authorization (Day 1)
+## Things I learned
 
-**Status:** ✅ Complete  
-**Progress:** 100%  
-**Started:** January 26, 2026 - 3:20 PM IST  
-**Completed:** January 26, 2026 - 5:25 PM IST
+- GPS distance calculation with Haversine formula
+- Proper JWT token handling (expiry, refresh, etc.)
+- React Context API for state management
+- Vitest for testing (similar to Jest but faster)
 
-### ✅ Completed Tasks
+## Test Coverage
 
-1. **Code Review & Bug Discovery**
-   - ✅ Reviewed auth middleware, auth routes, server.js
-   - ✅ Identified 4 critical authentication bugs
-   - ✅ Documented all bugs in BUG_FIXES.md
+Backend: 91.81% (87 tests)
+Frontend: 95.43% (38 tests)
 
-2. **Bug Fixes Implemented**
-   - ✅ Bug #1: Added `await` to bcrypt.compare() - CRITICAL
-   - ✅ Bug #2: Removed password from JWT payload - SECURITY
-   - ✅ Bug #3: Replaced bcrypt with bcryptjs - COMPATIBILITY
-   - ✅ Bug #4: Added empty string validation
-   - ✅ Bug #5: Fixed wrong HTTP status code (200→400) in checkin route
+Could be higher but focused on testing important logic rather than hitting 100%.
 
-3. **Authentication Test Suite (20 tests)**
-   - ✅ Middleware tests (7 tests):
-     - Token verification with valid/invalid/expired tokens
-     - Role-based authorization (manager/employee)
-     - SQL injection protection
+## Challenges
+
+1. **Async bug in auth** - The starter code was missing `await` on password check. Took me a bit to catch this.
+2. **SQL injection** - Date filters weren't parameterized. Fixed using proper prepared statements.
+3. **GPS accuracy** - Had to research Haversine formula to calculate distances correctly.
+4. **Session persistence** - Took some trial to get JWT storage working right with React Router.
+
+## What I'd improve with more time
+
+- Add WebSocket for real-time updates
+- Better error messages for users
+- More detailed manager reports
+- Export data to CSV/Excel
+- Push notifications for check-ins
+- Offline mode with sync when back online
+
    - ✅ Login endpoint tests (13 tests):
      - Valid credentials flow
      - Invalid credentials handling

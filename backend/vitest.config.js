@@ -10,8 +10,19 @@ export default defineConfig({
       exclude: [
         'node_modules/',
         'tests/',
-        '*.config.js'
-      ]
+        '*.config.js',
+        'server.js', // Entry point
+        'scripts/**', // Utility scripts
+        'config/database-sqlite.js', // Thin wrapper
+        '.eslintrc.cjs'
+      ],
+      all: true,
+      thresholds: {
+        statements: 85,
+        branches: 80,
+        functions: 85,
+        lines: 85
+      }
     }
   }
 });

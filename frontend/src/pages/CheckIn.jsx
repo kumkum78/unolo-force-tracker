@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../utils/api';
 
-function CheckIn({ user }) {
+function CheckIn() {
     const [clients, setClients] = useState([]);
     const [selectedClient, setSelectedClient] = useState('');
     const [notes, setNotes] = useState('');
@@ -56,6 +56,7 @@ function CheckIn({ user }) {
     };
 
     const handleCheckIn = async (e) => {
+        e.preventDefault();
         setError('');
         setSuccess('');
         setSubmitting(true);
@@ -167,10 +168,11 @@ function CheckIn({ user }) {
                     
                     <form onSubmit={handleCheckIn}>
                         <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-medium mb-2">
+                            <label htmlFor="client-select" className="block text-gray-700 text-sm font-medium mb-2">
                                 Select Client
                             </label>
                             <select
+                                id="client-select"
                                 value={selectedClient}
                                 onChange={(e) => setSelectedClient(e.target.value)}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -186,10 +188,11 @@ function CheckIn({ user }) {
                         </div>
 
                         <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-medium mb-2">
+                            <label htmlFor="notes-textarea" className="block text-gray-700 text-sm font-medium mb-2">
                                 Notes (Optional)
                             </label>
                             <textarea
+                                id="notes-textarea"
                                 value={notes}
                                 onChange={(e) => setNotes(e.target.value)}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import api from '../utils/api';
 
-function History({ user }) {
-    const [checkins, setCheckins] = useState(null);
+function History() {
+    const [checkins, setCheckins] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [startDate, setStartDate] = useState('');
@@ -76,8 +76,9 @@ function History({ user }) {
             <div className="bg-white rounded-lg shadow p-4 mb-6">
                 <form onSubmit={handleFilter} className="flex flex-wrap gap-4 items-end">
                     <div>
-                        <label className="block text-sm text-gray-600 mb-1">Start Date</label>
+                        <label htmlFor="start-date" className="block text-sm text-gray-600 mb-1">Start Date</label>
                         <input
+                            id="start-date"
                             type="date"
                             value={startDate}
                             onChange={(e) => setStartDate(e.target.value)}
@@ -85,8 +86,9 @@ function History({ user }) {
                         />
                     </div>
                     <div>
-                        <label className="block text-sm text-gray-600 mb-1">End Date</label>
+                        <label htmlFor="end-date" className="block text-sm text-gray-600 mb-1">End Date</label>
                         <input
+                            id="end-date"
                             type="date"
                             value={endDate}
                             onChange={(e) => setEndDate(e.target.value)}
@@ -119,7 +121,7 @@ function History({ user }) {
                 <div className="flex gap-8">
                     <div>
                         <p className="text-sm text-gray-500">Total Check-ins</p>
-                        <p className="text-2xl font-bold text-blue-600">{checkins?.length || 0}</p>
+                        <p className="text-2xl font-bold text-blue-600">{checkins.length}</p>
                     </div>
                     <div>
                         <p className="text-sm text-gray-500">Total Hours Worked</p>
@@ -130,7 +132,7 @@ function History({ user }) {
 
             {/* History Table */}
             <div className="bg-white rounded-lg shadow overflow-hidden">
-                {checkins?.length > 0 ? (
+                {checkins.length > 0 ? (
                     <table className="w-full">
                         <thead className="bg-gray-50">
                             <tr>

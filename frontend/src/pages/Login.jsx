@@ -42,10 +42,11 @@ function Login({ onLogin }) {
 
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-medium mb-2">
+                        <label htmlFor="email" className="block text-gray-700 text-sm font-medium mb-2">
                             Email
                         </label>
                         <input
+                            id="email"
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -56,10 +57,11 @@ function Login({ onLogin }) {
                     </div>
 
                     <div className="mb-6">
-                        <label className="block text-gray-700 text-sm font-medium mb-2">
+                        <label htmlFor="password" className="block text-gray-700 text-sm font-medium mb-2">
                             Password
                         </label>
                         <input
+                            id="password"
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
