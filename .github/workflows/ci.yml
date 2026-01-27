@@ -61,10 +61,20 @@ jobs:
           cd backend
           npm ci
       
+      - name: Setup Environment
+        run: |
+          cd backend
+          cp .env.example .env
+      
+      - name: Initialize Database
+        run: |
+          cd backend
+          npm run init-db
+      
       - name: Run Tests with Coverage
         run: |
           cd backend
-          npm test -- --coverage
+          npm run test:coverage
         env:
           NODE_ENV: test
           JWT_SECRET: test-secret-key-for-ci
@@ -97,7 +107,7 @@ jobs:
       - name: Run Tests with Coverage
         run: |
           cd frontend
-          npm test -- --coverage --run
+          npm run test:coverage
       
       - name: Check Coverage Thresholds
         run: |
