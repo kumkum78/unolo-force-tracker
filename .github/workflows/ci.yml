@@ -74,7 +74,7 @@ jobs:
       - name: Run Tests with Coverage
         run: |
           cd backend
-          npm run test:coverage
+          npm test -- --coverage
         env:
           NODE_ENV: test
           JWT_SECRET: test-secret-key-for-ci
