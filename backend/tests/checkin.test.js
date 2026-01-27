@@ -129,6 +129,11 @@ describe('Check-In System Tests', () => {
     app.use('/api/checkin', checkinRoutes);
   });
 
+  beforeEach(() => {
+    // Clean up checkins before each test to avoid interference
+    db.prepare('DELETE FROM checkins').run();
+  });
+
   afterAll(() => {
     db.close();
     if (fs.existsSync(testDbPath)) {
