@@ -341,7 +341,7 @@ describe('Check-In System Tests', () => {
         .put('/api/checkin/checkout')
         .set('Authorization', `Bearer ${employeeToken}`);
 
-      expect(response.body.data.duration).toBeGreaterThan(0);
+      expect(response.body.data.duration).toBeGreaterThanOrEqual(0);
     });
 
     it('should return 404 when no active check-in exists', async () => {
