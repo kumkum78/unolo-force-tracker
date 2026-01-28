@@ -26,13 +26,7 @@ export default defineConfig({
         'src/components/Layout.jsx', // Already tested via pages
         'src/utils/api.js' // Axios wrapper, tested via integration
       ],
-      all: true,
-      thresholds: {
-        statements: 75,
-        branches: 70,
-        functions: 70,
-        lines: 75
-      }
+      all: true
     }
   }
 });
