@@ -171,11 +171,6 @@ describe('Check-In System Tests', () => {
   });
 
   describe('POST /api/checkin - Create Check-In', () => {
-    beforeEach(() => {
-      // Clean up checkins before each test
-      db.prepare('DELETE FROM checkins').run();
-    });
-
     it('should create check-in at assigned client', async () => {
       const response = await request(app)
         .post('/api/checkin')
@@ -313,10 +308,6 @@ describe('Check-In System Tests', () => {
   });
 
   describe('PUT /api/checkin/checkout - Checkout', () => {
-    beforeEach(() => {
-      db.prepare('DELETE FROM checkins').run();
-    });
-
     it('should checkout from active check-in', async () => {
       // Create check-in first
       await request(app)
@@ -368,8 +359,9 @@ describe('Check-In System Tests', () => {
     });
   });
 
-  describe('GET /api/checkin/history - Check-In History', () => {
+  describe('GET /api/checkin/history - Get Check-In History', () => {
     beforeEach(() => {
+      // Clean and setup history test data
       db.prepare('DELETE FROM checkins').run();
       
       // Insert historical checkins
@@ -446,9 +438,6 @@ describe('Check-In System Tests', () => {
   });
 
   describe('GET /api/checkin/active - Active Check-In', () => {
-    beforeEach(() => {
-      db.prepare('DELETE FROM checkins').run();
-    });
 
     it('should return active check-in when exists', async () => {
       // Create check-in
