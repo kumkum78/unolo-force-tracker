@@ -1,0 +1,16 @@
+# Bugs Fixed
+
+Found these issues in the starter code:
+
+- Missing `await` on bcrypt password check - login failing
+- Password was in JWT token - security issue
+- No validation on check-in requests
+- SQL injection risks - switched to parameterized queries
+- Wrong distance calculation formula
+- Could check in at unassigned clients
+- Multiple active check-ins allowed
+- Foreign key violations
+- CORS issues
+- Missing error handling
+
+Fixed while writing tests.

@@ -110,16 +110,5 @@ database/
 ## Notes
 
 - SQLite is used so no external database needed
-- The starter code had some bugs which I fixed (see BUG_FIXES.md)
-- All tests pass with good coverage (backend: 91%, frontend: 95%)
-
-## Issues Fixed
-
-I found and fixed 10 bugs in the original starter code:
-- Missing `await` on password comparison (critical security issue)
-- Password being sent in JWT payload
-- SQL injection vulnerabilities
-- Wrong HTTP status codes
-- Database column mismatches
-
-See BUG_FIXES.md for detailed explanations.
+- Fixed several bugs in the starter code
+- All tests pass with 91% backend and 95% frontend coverage
